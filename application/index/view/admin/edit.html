@@ -1,0 +1,140 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file='public/_left'/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;管理员管理
+                    </li>
+                    <li>管理员编辑</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">管理员编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">管理员ID</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$admin.id}</span>
+                                            <input type="text" name="id" value={$admin.id} hidden>
+                                        </div>
+                                    </div>
+                                    {if session('admin.is_super')==1}
+                                    <div class="form-group">
+                                        <label for="is_super" class="control-label col-sm-2">权限</label>
+                                        <div class="col-sm-6">
+                                            {if $admin.is_super == 1}
+                                            <span class="help-block" value="1">超级管理员</span>
+                                            <input type="text" name="is_super" value={$admin.is_super} hidden>
+                                            {else /}
+                                            <select id="is_super" name="is_super" class="form-control" >
+                                                <option value="0" {if $admin.is_super == 0} selected {/if}>管理员</option>
+                                                <option value="1" {if $admin.is_super == 1} selected {/if}>超级管理员</option>
+                                            </select>
+                                            {/if}
+                                        </div>
+                                    </div>
+                                    {else /}
+                                    <input type="text" name="is_super" value={$admin.is_super} hidden>
+                                    {/if}
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">账号</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$admin.username}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">邮箱</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$admin.email}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nickname" class="control-label col-sm-2">昵称</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="填写昵称" value="{$admin.nickname}"/>
+                                        </div>
+                                    </div>
+                                    {if session('admin.is_super')==1}
+                                    <div class="form-group">
+                                        <label for="status" class="control-label col-sm-2" >状态</label>
+                                        <div class="col-sm-6">
+                                            <select id="status" name="status" class="form-control" >
+                                                <option value="0" {if $admin.status == 0} selected {/if}>禁用</option>
+                                                <option value="1" {if $admin.status == 1} selected {/if}>正常</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {else /}
+                                    <input type="text" name="status" value={$admin.status} hidden>
+                                    {/if}
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" class="btn btn-primary" id="adminEdit">编辑</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $("#adminEdit").click(function () {
+            $.ajax({
+                url:"{:url('index/admin/edit')}",
+                type:'post',
+                data:$('form').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else{
+                        layer.open({
+                            title:'编辑失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

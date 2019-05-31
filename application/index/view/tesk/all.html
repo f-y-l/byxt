@@ -1,0 +1,374 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;课题管理
+                    </li>
+                    <li>课题列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                {if {:session('?teacher.id')}
+                    <a href="{:url('index/tesk/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加课题</a>
+                {/if}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption" style="margin-top: 11px">课题列表</span>
+                                <div class="widget-buttons" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    <a href="./taskalls">查看全部</a>
+                                </div>
+                                <div class="widget-buttons showsbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    详细视图
+                                </div>
+                                <div class="widget-buttons showbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    简单视图
+                                </div>
+                                {if session('?teacher')}
+                                <div class="widget-buttons ashowbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    其他教师课题
+                                </div>
+                                {/if}
+                                <div class="widget-buttons">
+                                    {$tesk->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered showtable" style="display: none">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>课题名称</th>
+                                        {if {:session('?admin.id')}
+                                        <th>所属专业</th>
+                                        <th>所属教师</th>
+                                        {/if}
+                                        <th>审核</th>
+                                        <th>状态</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='tesk' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.tesk}</td>
+                                        {if {:session('?admin.id')}
+                                        <td>
+                                            {volist name='college' id='cvo'}
+                                            {if $vo.college_id==$cvo.id}
+                                            {$cvo.college}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td>{if $vo.status == 0}
+                                            <b style="color: red;">待审核</b>
+                                            {/if}
+                                            {if $vo.status == 1 }
+                                            <b style="color: green;">审核通过</b>
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {volist name='check' id='tvo'}
+                                            {if $vo.id == $tvo.tesk_id}
+                                            {if $tvo.status==1}
+                                            <b style="color: #F4B400">课题已被确认</b>
+                                            {/if}
+                                            {if $tvo.lock==1&&$tvo.status==0}
+                                            <b style="color: blue">课题已被选择</b>
+                                            {/if}
+                                            {if $tvo.status==0&&$tvo.lock==0}
+                                            <b style="color: green">课题等待选择</b>
+                                            {/if}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>
+                                            {if {:session('?admin.id')}
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">确认审核</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消审核</a>
+                                            {/if}
+                                            {/if}
+                                            {if {:session('?teacher.id')}
+                                            <a href="{:url('index/tesk/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            {/if}
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                                <table class="table table-hover table-bordered showstable">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>课题名称</th>
+                                        {if {:session('?admin.id')}
+                                        <th>所属专业</th>
+                                        <th>所属教师</th>
+                                        {/if}
+                                        <th style="max-width: 300px">课题描述</th>
+                                        <!-- <th style="max-width: 300px">课题要求</th>
+                                        <th style="max-width: 300px">课题技术</th> -->
+                                        <th>审核</th>
+                                        <th>状态</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='tesk' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td style="max-width: 150px">{$vo.tesk}</td>
+                                        {if {:session('?admin.id')}
+                                        <td  style="max-width: 150px">
+                                            {volist name='college' id='cvo'}
+                                            {if $vo.college_id==$cvo.id}
+                                            {$cvo.college}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td style="max-width: 350px">
+                                            <?php echo html_entity_decode($vo['description']);?>
+                                        </td>
+                                        <!-- <td style="max-width: 300px">
+                                            <?php echo html_entity_decode($vo['demend']);?>
+                                        </td>
+                                        <td style="max-width: 300px">
+                                            <?php echo html_entity_decode($vo['skill']);?>
+                                        </td> -->
+                                        <td>{if $vo.status == 0}
+                                            <b style="color: red;">待审核</b>
+                                            {/if}
+                                            {if $vo.status == 1 }
+                                            <b style="color: green;">审核通过</b>
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {volist name='check' id='tvo'}
+                                            {if $vo.id == $tvo.tesk_id}
+                                                {if $tvo.status==1}
+                                                <b style="color: #F4B400">课题已被确认</b>
+                                                {/if}
+                                                {if $tvo.lock==1&&$tvo.status==0}
+                                                <b style="color: blue">课题已被选择</b>
+                                                {/if}
+                                                {if $tvo.status==0&&$tvo.lock==0}
+                                                <b style="color: green">课题等待选择</b>
+                                                {/if}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>
+                                            {if {:session('?admin.id')}
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">确认审核</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消审核</a>
+                                            {/if}
+                                            {/if}
+                                            {if {:session('?teacher.id')}
+                                            <a href="{:url('index/tesk/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            {/if}
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                                <table class="table table-hover table-bordered ashowtable" style="display: none" >
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>课题名称</th>
+                                        <th>所属教师</th>
+                                        <th>审核</th>
+                                        <th>状态</th>
+                                        <th>创建时间</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='tesks' id='vos'}
+                                    <tr>
+                                        <td>{$vos.id}</td>
+                                        <td>{$vos.tesk}</td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vos.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{if $vos.status == 0}
+                                            <b style="color: red;">待审核</b>
+                                            {/if}
+                                            {if $vos.status == 1 }
+                                            <b style="color: green;">审核通过</b>
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {volist name='check' id='tvo'}
+                                            {if $vos.id == $tvo.tesk_id}
+                                            {if $tvo.status==1}
+                                            <b style="color: #F4B400">课题已被确认</b>
+                                            {/if}
+                                            {if $tvo.lock==1&&$tvo.status==0}
+                                            <b style="color: blue">课题已被选择</b>
+                                            {/if}
+                                            {if $tvo.status==0&&$tvo.lock==0}
+                                            <b style="color: green">课题等待选择</b>
+                                            {/if}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{$vos.create_time}</td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $('.showsbot').click(function () {
+           $('.showtable').css("display","none");
+            $('.ashowtable').css("display","none");
+           $('.showstable').css("display","table");
+        });
+        $('.showbot').click(function () {
+            $('.showstable').css("display","none");
+            $('.ashowtable').css("display","none");
+            $('.showtable').css("display","table");
+        });
+        $('.ashowbot').click(function () {
+            $('.showstable').css("display","none");
+            $('.showtable').css("display","none");
+            $('.ashowtable').css("display","table");
+        });
+        $('.statusbut').click(function () {
+            let status = $(this).attr('votop');
+            let id = $(this).attr('void');
+            let msg = '';
+            let iconid;
+            if(status == 0){
+                msg = '确认通过审核';
+                iconid = '3'
+            }else{
+                msg = '确认取消审核';
+                iconid = '4'
+            }
+            layer.confirm(msg,{
+                title: '审核操作',
+                icon:iconid
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/tesk/status')}",
+                    type:'post',
+                    data:{id:id,status:status},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                })
+            });
+            return false;
+        });
+
+        $('.admin-del').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('确认删除课题？<br>与之关联学生的课题信息将失效！',{
+                title:'删除操作',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/tesk/del')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url;
+                            })
+                        }else{
+                            layer.open({
+                                title:'删除失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

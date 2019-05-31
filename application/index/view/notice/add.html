@@ -1,0 +1,100 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file='public/_left'/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;公告管理
+                    </li>
+                    <li>公告添加</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">公告添加</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="title" class="control-label col-sm-2">公告标题</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="title" name="title" placeholder="填写公告标题" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content" class="control-label col-sm-2">公告内容</label>
+                                        <div class="col-sm-6">
+                                            <textarea name="content" id="content" cols="30" rows="10"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" class="btn btn-primary" id="articleAdd">添加</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script src="/static/lib/ueditor/ueditor.config.js"></script>
+<script src="/static/lib/ueditor/ueditor.all.js"></script>
+<script>
+    $(function () {
+        UE.getEditor('content');
+
+        $("#articleAdd").click(function () {
+            $.ajax({
+                url:"{:url('index/notice/add')}",
+                type:'post',
+                data:$('form').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else{
+                        layer.open({
+                            title:'添加失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

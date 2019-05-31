@@ -1,0 +1,404 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;毕业选题
+                    </li>
+                    <li>选题列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption" style="margin-top: 11px">选题列表</span>
+                                {if session('?student')}
+                                <span class="widget-caption" style="margin: 11px 40px">
+                                    <form style="float: left;">
+                                        <select name="teacher_id" class="layui-select-disabled" lay-verify="require" lay-search>
+                                            <option value="0">查看所有老师课题</option>
+                                            {volist name="teacher" id="mtvo"}
+                                                <option value={$mtvo.id}>{$mtvo.nickname}</option>
+                                            {/volist}
+                                        </select>
+                                    </form>
+                                    <div class="form-group" style="float: left; margin-top: -1px;">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" class="btn btn-primary" id="checkbot">查找</button>
+                                        </div>
+                                    </div>
+                                </span>
+                                {/if}
+
+                                <div class="widget-buttons showsbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    详细视图
+                                </div>
+                                <div class="widget-buttons showbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    简单视图
+                                </div>
+                                <div class="widget-buttons">
+                                    {$check->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <!--<table id="demo" lay-filter="test"></table>-->
+                                <table class="table table-hover table-bordered showstable" style="display: none;">
+                                    <thead>
+                                    <tr>
+                                        <th>选题ID</th>
+                                        {if session('?teacher')}
+                                        <th>课题ID</th>
+                                        {/if}
+                                        <th>课题名称</th>
+                                        {if session('?teacher')}
+                                        <th>选题学生</th>
+                                        {/if}
+                                        {if session('?student')}
+                                        <th>开题教师</th>
+                                        {/if}
+                                        <th style="max-width: 300px">课题描述</th>
+                                        <th style="max-width: 300px">课题要求</th>
+                                        <th style="max-width: 300px">课题技术</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='check' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        {if session('?teacher')}
+                                        <td>
+                                            {volist name='tesk' id='teskvo'}
+                                            {if $vo.tesk_id==$teskvo.id}
+                                            {$teskvo.id}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td>
+                                            {volist name='tesk' id='tevo'}
+                                            {if $vo.tesk_id==$tevo.id}
+                                            {$tevo.tesk}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {if session('?teacher')}
+                                        <td>
+                                            {volist name='student' id='svo'}
+                                            {if $vo.student_id==$svo.id}
+                                            {$svo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        {if session('?student')}
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td style="max-width: 300px">
+                                            {volist name='tesk' id='devo'}
+                                            {if $vo.tesk_id==$devo.id}
+                                            <?php echo html_entity_decode($devo['description']);?>
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td style="max-width: 300px">
+                                            {volist name='tesk' id='demvo'}
+                                            {if $vo.tesk_id==$demvo.id}
+                                            <?php echo html_entity_decode($demvo['demend']);?>
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td style="max-width: 300px">
+                                            {volist name='tesk' id='kivo'}
+                                            {if $vo.tesk_id==$kivo.id}
+                                            <?php echo html_entity_decode($kivo['skill']);?>
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {if $vo.cstatus == 0}
+                                                <b style="color: red">课题等待审核</b>
+                                            {else /}
+                                                {if $vo.status == 1}
+                                                <b style="color: gold">课题已被确认</b>
+                                                {/if}
+                                                {if $vo.lock ==1&&$vo.status==0}
+                                                <b style="color: blue">课题已被选择</b>
+                                                {/if}
+                                                {if $vo.status==0&&$vo.lock==0}
+                                                <b style="color: green">课题等待选择</b>
+                                                {/if}
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {if session('?student')}
+                                            {if $vo.student_id == 0  &&  $student.check_id == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status lockbut" volock="{$vo.lock}" void="{$vo.id}" sid={:session('student.id')}>确认选择</a>
+                                            {/if}
+                                            {if $vo.id == $student.check_id}
+                                            <a href="#" class="btn btn-sm btn-danger admin-status disabled">你已经选择该课程</a>
+                                            <!--<a href="#" class="btn btn-sm btn-default admin-status disabled" style="background-color: #0f0f0f; color: white;">无法选择</a>-->
+                                            {/if}
+                                            {/if}
+                                            {if session('?teacher') && $vo.student_id != 0  &&  $vo.status != 1}
+                                            <a href="#" class="btn btn-sm btn-success admin-status passbut" void="{$vo.id}">课题学生确认</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-status nopassbut" void="{$vo.id}">课题学生取消</a>
+                                            {/if}
+                                            {if session('?teacher') && $vo.status == 1}
+                                            <a href="#" class="btn btn-sm btn-danger admin-status disabled">该课程已被确认</a>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                                <table class="table table-hover table-bordered showtable">
+                                    <thead style="margin: 0 auto">
+                                    <tr>
+                                        <th>选课ID</th>
+                                        {if session('?teacher')}
+                                        <th>课题ID</th>
+                                        {/if}
+                                        <th>课题名称</th>
+                                        {if session('?teacher')}
+                                        <th>选题学生</th>
+                                        {/if}
+                                        {if session('?student')}
+                                        <th>开题教师</th>
+                                        {/if}
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='check' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        {if session('?teacher')}
+                                        <td>
+                                            {volist name='tesk' id='teskvo'}
+                                            {if $vo.tesk_id==$teskvo.id}
+                                            {$teskvo.id}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td>
+                                            {volist name='tesk' id='tevo'}
+                                            {if $vo.tesk_id==$tevo.id}
+                                            {$tevo.tesk}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {if session('?teacher')}
+                                        <td>
+                                            {volist name='student' id='svo'}
+                                            {if $vo.student_id==$svo.id}
+                                            {$svo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        {if session('?student')}
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        {/if}
+                                        <td>
+                                            {if $vo.cstatus == 0}
+                                                <b style="color: red">课题等待审核</b>
+                                                {else /}
+                                                {if $vo.status == 1}
+                                                <b style="color: gold">课题已被确认</b>
+                                                {/if}
+                                                {if $vo.lock ==1&&$vo.status==0}
+                                                <b style="color: blue">课题已被选择</b>
+                                                {/if}
+                                                {if $vo.status==0&&$vo.lock==0}
+                                                <b style="color: green">课题等待选择</b>
+                                            {/if}
+                                            {/if}
+                                        </td>
+                                        <td>
+                                            {if session('?student')}
+                                            {if $vo.student_id == 0  &&  $student.check_id == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status lockbut" volock="{$vo.lock}" void="{$vo.id}" sid={:session('student.id')}>确认选择</a>
+                                            {/if}
+                                            {if $vo.id == $student.check_id}
+                                            <a href="#" class="btn btn-sm btn-danger admin-status disabled">你已经选择该课程</a>
+                                            <!--<a href="#" class="btn btn-sm btn-default admin-status disabled" style="background-color: #0f0f0f; color: white;">无法选择</a>-->
+                                            {/if}
+                                            {/if}
+                                            {if session('?teacher') && $vo.student_id != 0  &&  $vo.status != 1}
+                                            <a href="#" class="btn btn-sm btn-success admin-status passbut" void="{$vo.id}">课题学生确认</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-status nopassbut" void="{$vo.id}">课题学生取消</a>
+                                            {/if}
+                                            {if session('?teacher') && $vo.status == 1}
+                                            <a href="#" class="btn btn-sm btn-danger admin-status disabled">该课程已被确认</a>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $('.showsbot').click(function () {
+            $('.showtable').css("display","none");
+            $('.showstable').css("display","table");
+        });
+        $('.showbot').click(function () {
+            $('.showstable').css("display","none");
+            $('.showtable').css("display","table");
+        });
+        $('#checkbot').click(function () {
+            let id = $('form').serialize();
+            location.href = 'checkall?'+id;
+        });
+        $('.nopassbut').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('取消后，学生选课信息将被重置！',{
+                title:'选择取消',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/check/nopass')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+        
+        $('.passbut').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('选择后将无法更改！',{
+                title:'选择确认',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/check/pass')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+        $('.lockbut').click(function () {
+            let lock = $(this).attr('volock');
+            let id = $(this).attr('void');
+            let student_id = $(this).attr('sid');
+            layer.confirm('选择后将无法更改！',{
+                title:'选择确认',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/check/lock')}",
+                    type:'post',
+                    data:{id:id,lock:lock,student_id:student_id},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

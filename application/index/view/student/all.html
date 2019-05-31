@@ -1,0 +1,339 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;学生管理
+                    </li>
+                    <li>学生列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('index/student/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加学生</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption" style="margin-top: 11px">学生列表</span>
+                                {if {:session('?teacher')}
+                                <div class="widget-buttons mybot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    所带学生(第一页有效)
+                                </div>
+                                {/if}
+                                <div class="widget-buttons showsbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    详细视图
+                                </div>
+                                <div class="widget-buttons showbot" style="height: 30px; box-shadow: rgba(0,0,0,.2) 1px 1px 3px; margin-bottom: 10px;cursor: pointer">
+                                    简单视图
+                                </div>
+                                <div class="widget-buttons bot">
+                                    {$student->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered showstudent" style="display: none">
+                                    <thead>
+                                    <tr>
+                                        <th>学生ID</th>
+                                        <th>姓名</th>
+                                        <th>学号</th>
+                                        <th>所属专业</th>
+                                        <th>所属教师</th>
+                                        <th>选课状态</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='students' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td>{$vo.username}</td>
+                                        <td>
+                                            {volist name='college' id='cvo'}
+                                            {if $vo.college_id==$cvo.id}
+                                            {$cvo.college}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {if $vo.check_id != 0&&$vo.teacher_id != 0}
+                                            <b style="color:blue">课题确定</b>
+                                            {else /}
+                                            {if $vo.check_id != 0&&$vo.teacher_id == 0}
+                                            <b style="color:green">已选题</b>
+                                            {else /}
+                                            <b style="color:red">未选题</b>
+                                            {/if}
+                                            {/if}
+                                        </td>
+                                        <td>{if $vo.status == 1}<b style="color:green">正常</b>{else /}<b style="color:red">禁用</b>{/if}</td>
+                                        <td>
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消禁用</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">设置禁用</a>
+                                            {/if}
+                                            <a href="{:url('index/student/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                                <table class="table table-hover table-bordered showtable">
+                                    <thead>
+                                    <tr>
+                                        <th>学生ID</th>
+                                        <th>姓名</th>
+                                        <th>学号</th>
+                                        <th>所属专业</th>
+                                        <th>所属教师</th>
+                                        <th>选课状态</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='student' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td>{$vo.username}</td>
+                                        <td>
+                                            {volist name='college' id='cvo'}
+                                            {if $vo.college_id==$cvo.id}
+                                            {$cvo.college}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {if $vo.check_id != 0&&$vo.teacher_id != 0}
+                                            <b style="color:blue">课题确定</b>
+                                            {else /}
+                                            {if $vo.check_id != 0&&$vo.teacher_id == 0}
+                                            <b style="color:green">已选题</b>
+                                            {else /}
+                                            <b style="color:red">未选题</b>
+                                            {/if}
+                                            {/if}
+                                        </td>
+                                        <td>{if $vo.status == 1}<b style="color:green">正常</b>{else /}<b style="color:red">禁用</b>{/if}</td>
+                                        <td>
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消禁用</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">设置禁用</a>
+                                            {/if}
+                                            <a href="{:url('index/student/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                                <table class="table table-hover table-bordered showstable" style="display: none;">
+                                    <thead>
+                                    <tr>
+                                        <th>学生ID</th>
+                                        <th>姓名</th>
+                                        <th>学号</th>
+                                        <th>密码</th>
+                                        <th>邮箱</th>
+                                        <th>所属专业</th>
+                                        <th>所属教师</th>
+                                        <th>选课状态</th>
+                                        <th>状态</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='student' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.nickname}</td>
+                                        <td>{$vo.username}</td>
+                                        <td>{$vo.password}</td>
+                                        <td>{$vo.email}</td>
+                                        <td>
+                                            {volist name='college' id='cvo'}
+                                            {if $vo.college_id==$cvo.id}
+                                            {$cvo.college}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {volist name='teacher' id='tvo'}
+                                            {if $vo.teacher_id==$tvo.id}
+                                            {$tvo.nickname}
+                                            {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>
+                                            {if $vo.check_id != 0&&$vo.teacher_id != 0}
+                                            <b style="color:blue">课题确定</b>
+                                            {else /}
+                                            {if $vo.check_id != 0&&$vo.teacher_id == 0}
+                                            <b style="color:green">已选题</b>
+                                            {else /}
+                                            <b style="color:red">未选题</b>
+                                            {/if}
+                                            {/if}
+                                        </td>
+                                        <td>{if $vo.status == 1}<b style="color:green">正常</b>{else /}<b style="color:red">禁用</b>{/if}</td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消禁用</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">设置禁用</a>
+                                            {/if}
+                                            <a href="{:url('index/student/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $('.mybot').click(function () {
+            $('.showstudent').css("display","table");
+            $('.showtable').css("display","none");
+            $('.showstable').css("display","none");
+            $('.bot').css("display","none");
+        });
+        $('.showsbot').click(function () {
+            $('.showstudent').css("display","none");
+            $('.showtable').css("display","none");
+            $('.showstable').css("display","table");
+            $('.bot').css("display","inline-block");
+        });
+        $('.showbot').click(function () {
+            $('.showstudent').css("display","none");
+            $('.showstable').css("display","none");
+            $('.showtable').css("display","table");
+            $('.bot').css("display","inline-block");
+        });
+
+        $('.statusbut').click(function () {
+            let status = $(this).attr('votop');
+            let id = $(this).attr('void');
+            let msg = '';
+            let iconid;
+            if(status == 0){
+                msg = '确认取消禁用';
+                iconid = '3'
+            }else{
+                msg = '确认设置禁用';
+                iconid = '4'
+            }
+            layer.confirm(msg,{
+                title: '禁用操作',
+                icon:iconid
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/student/status')}",
+                    type:'post',
+                    data:{id:id,status:status},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                })
+            });
+            return false;
+        });
+
+        $('.admin-del').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('确认删除学生',{
+                title:'删除操作',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/student/del')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url;
+                            })
+                        }else{
+                            layer.open({
+                                title:'删除失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

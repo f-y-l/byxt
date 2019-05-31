@@ -1,0 +1,116 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;公告管理
+                    </li>
+                    <li>公告列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('index/notice/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加公告</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">公告列表</span>
+                                <div class="widget-buttons">
+                                    {$notice->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>标题</th>
+                                        <th>内容</th>
+                                        <th>创建时间</th>
+                                        <th>更新时间</th>
+                                        <th style="min-width: 110px">操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='notice' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.title}</td>
+                                        <td><?php echo html_entity_decode($vo['content']);?></td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>{$vo.update_time}</td>
+                                        <td>
+                                            <a href="{:url('index/notice/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function(){
+    $('.admin-del').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('确认删除公告',{
+                title:'删除操作',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/notice/del')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url;
+                            })
+                        }else{
+                            layer.open({
+                                title:'删除失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

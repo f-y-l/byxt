@@ -1,0 +1,88 @@
+{include file="public/_head" /}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file="public/_left" /}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-home"></i>&nbsp;控制面板
+                    </li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="well with-header with-footer" >
+                            <div class="header bg-themeprimary">
+                                公告信息
+                            </div>
+                            {volist name='notice' id='nid'}
+                            <div class="layui-card" style="padding: 20px; box-shadow: 5px 5px 20px #ccc; max-width: 1200px;margin: 0 auto 30px;" >
+                                <div class="layui-card-header" style="margin:12px;font-size: 30px; border-bottom:1px #ccc solid">{$nid.title}</div>
+                                <div class="layui-card-body" style="padding-bottom: 50px">
+                                    <?php echo html_entity_decode($nid['content']);?>
+                                    <div style="float:right; font-size: 14px; padding: 20px; color: #444444; font-weight: 100">
+                                        发布时间：{$nid.create_time} | 修改时间：{$nid.update_time}
+                                    </div>
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                {if {:session('?admin')}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="well with-header with-footer">
+                            <div class="header bg-themeprimary">
+                                服务器信息
+                            </div>
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                <tr>
+                                    <th colspan="2">服务器信息</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>服务器域名</td>
+                                    <td>{$Request.domain}</td>
+                                </tr>
+                                <tr>
+                                    <td>服务器IP地址</td>
+                                    <td>{$Request.ip}</td>
+                                </tr>
+                                <tr>
+                                    <td>服务器端口</td>
+                                    <td>{$Request.port}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file="public/_js" /}
+
+</body>
+<!--  /Body -->
+</html>

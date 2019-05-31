@@ -1,0 +1,114 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;专业管理
+                    </li>
+                    <li>专业列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="{:url('index/college/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;专业添加</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">专业列表</span>
+                                <div class="widget-buttons">
+                                    {$college->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>专业名称</th>
+                                        <th>专业描述</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='college' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        <td>{$vo.college}</td>
+                                        <td>{$vo.account}</td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>
+                                            <a href="{:url('index/college/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $('.admin-del').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('确认删除专业？<br>与之关联的教师，学生，课题信息也将一并删除！',{
+                title:'删除操作',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/college/del')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url;
+                            })
+                        }else{
+                            layer.open({
+                                title:'删除失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

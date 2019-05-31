@@ -1,0 +1,193 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        <!-- Page Sidebar -->
+        {include file='public/_left'/}
+        <!-- /Page Sidebar -->
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;教师管理
+                    </li>
+                    <li>教师列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                {if {:session('?admin.id')}<a href="{:url('index/teacher/add')}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加教师</a>{/if}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">教师列表</span>
+                                <div class="widget-buttons">
+                                    {$teacher->render()|raw|replace}
+                                </div>
+
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        {if {:session('admin')}
+                                        <th>账号</th>
+                                        {/if}
+                                        <th>姓名</th>
+                                        <!-- <th>邮箱</th> -->
+                                        <th>专业</th>
+                                        <th>状态</th>
+                                        <th>开课状态</th>
+                                        <th>创建时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name='teacher' id='vo'}
+                                    <tr>
+                                        <td>{$vo.id}</td>
+                                        {if {:session('admin')}
+                                        <td>{$vo.username}</td>
+                                        {/if}
+                                        <td>{$vo.nickname}</td>
+                                        <!-- <td>{$vo.email}</td> -->
+                                        <td>
+                                            {volist name='college' id='cvo'}
+                                                {if $vo.college_id==$cvo.id}
+                                                    {$cvo.college}
+                                                {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{if $vo.status == 1}<b style="color:green">正常</b>{else /}<b style="color:red">禁用</b>{/if}</td>
+                                        <td>
+                                            {volist name='tesk' id='tvo'}
+                                                {if $vo.id == $tvo.teacher_id}
+                                                <b style="color:green">开课中</b>
+                                                {/if}
+                                            {/volist}
+                                        </td>
+                                        <td>{$vo.create_time}</td>
+                                        <td>
+                                            {if {:session('admin.id')}
+                                            {if $vo.status == 0}
+                                            <a href="#" class="btn btn-sm btn-info admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">取消禁用</a>
+                                            {else /}
+                                            <a href="#" class="btn btn-sm btn-warning admin-status statusbut" votop="{$vo.status}" void="{$vo.id}">设置禁用</a>
+                                            {/if}
+                                            <a href="{:url('index/teacher/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                            {/if}
+                                            {if {:session('teacher.id') == $vo.id}
+                                            <a href="{:url('index/teacher/edit',['id' => $vo.id])}" class="btn btn-sm btn-success">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger admin-del" void="{$vo.id}">删除</a>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $('.statusbut').click(function () {
+            let status = $(this).attr('votop');
+            let id = $(this).attr('void');
+            let msg = '';
+            let iconid;
+            if(status == 0){
+                msg = '确认取消禁用';
+                iconid = '3'
+            }else{
+                msg = '确认设置禁用';
+                iconid = '4'
+            }
+            layer.confirm(msg,{
+                title: '禁用操作',
+                icon:iconid
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/teacher/status')}",
+                    type:'post',
+                    data:{id:id,status:status},
+                    dataType:'json',
+                    success:function (data) {
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url
+                            })
+                        }else{
+                            layer.open({
+                                title:'操作失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                })
+            });
+            return false;
+        });
+
+        $('.admin-del').click(function () {
+            let id = $(this).attr('void');
+            layer.confirm('确认删除教师?<br>与之关联的学生，课题信息也将一并删除！',{
+                title:'删除操作',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('index/teacher/del')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 1){
+                            layer.msg(data.msg,{
+                                icon:6,
+                                time:2000
+                            },function () {
+                                location.href = data.url;
+                            })
+                        }else{
+                            layer.open({
+                                title:'删除失败',
+                                content:data.msg,
+                                icon:5,
+                                anim:6
+                            })
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

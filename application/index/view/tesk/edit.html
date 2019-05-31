@@ -1,0 +1,127 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file='public/_left'/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;课题管理
+                    </li>
+                    <li>课题编辑</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">课题编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">课题ID</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$tesk.id}</span>
+                                            <input type="text" name="id" value={$tesk.id} hidden>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="tesk" class="control-label col-sm-2">课题名称</label>
+                                        <div class="col-sm-3">
+                                            <input type="text" class="form-control" id="tesk" name="tesk" placeholder="填写课题名称" value="{$tesk.tesk}"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">课题数量</label>
+                                        <div class="col-sm-3">
+                                            <!--<input type="text" class="form-control" id="tesk_num" name="tesk_num" placeholder="填写课题数量" value="{$tesk.tesk_num}"/>-->
+                                            <span class="help-block">1</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description" class="control-label col-sm-2">添加课题描述</label>
+                                        <div class="col-sm-8 col-lg-6">
+                                            <textarea name="description" id="description" cols="80" rows="15" placeholder="填写课题描述">{$tesk.description}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" hidden>
+                                        <label for="demend" class="control-label col-sm-2" hidden>添加课题要求</label>
+                                        <div class="col-sm-8 col-lg-6">
+                                            <textarea name="demend" id="demend" cols="80" rows="15" placeholder="填写课题要求">{$tesk.demend}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" hidden>
+                                        <label for="skill" class="control-label col-sm-2" hidden>添加课题技术要求</label>
+                                        <div class="col-sm-8 col-lg-6">
+                                            <textarea name="skill" id="skill" cols="80" rows="15" placeholder="填写课题技术要求">{$tesk.skill}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" class="btn btn-primary" id="adminEdit">编辑</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script src="/static/lib/ueditor/ueditor.config.js"></script>
+<script src="/static/lib/ueditor/ueditor.all.js"></script>
+<script>
+    $(function () {
+        UE.getEditor('description');
+        UE.getEditor('demend');
+        UE.getEditor('skill');
+        $("#adminEdit").click(function () {
+            $.ajax({
+                url:"{:url('index/tesk/edit')}",
+                type:'post',
+                data:$('form').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else{
+                        layer.open({
+                            title:'编辑失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>

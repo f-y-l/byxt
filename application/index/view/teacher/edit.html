@@ -1,0 +1,136 @@
+{include file='public/_head'/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file='public/_left'/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;教师管理
+                    </li>
+                    <li>教师编辑</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">教师编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form action="" class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">教师ID</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$teacher.id}</span>
+                                            <input type="text" name="id" value={$teacher.id} hidden>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">账号</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$teacher.username}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-sm-2">邮箱</label>
+                                        <div class="col-sm-6">
+                                            <span class="help-block">{$teacher.email}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nickname" class="control-label col-sm-2">昵称</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" class="form-control" id="nickname" name="nickname" placeholder="填写昵称" value={$teacher.nickname}>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="college_id" class="control-label col-sm-2">所属专业</label>
+                                        <div class="col-sm-6">
+                                            <select id="college_id" name="college_id" class="form-control" >
+                                                {volist id='vo' name='college'}
+                                                    <option value="{$vo.id}" {if $vo.id == $teacher.college_id} selected {/if}>{$vo.college}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="status" class="control-label col-sm-2" >状态</label>
+                                        <div class="col-sm-6">
+                                            {if {:session('?admin.id')}
+                                            <select id="status" name="status" class="form-control" >
+                                                <option value="0" {if $teacher.status == 0} selected {/if}>禁用</option>
+                                                <option value="1" {if $teacher.status == 1} selected {/if}>正常</option>
+                                            </select>
+                                            {else /}
+                                            <label class="control-label"> {if $teacher.status == 0} 禁用 {else /} 正常 {/if}</label>
+                                            <input type="text" name="status" value="{$teacher.status}" hidden>
+                                            {/if}
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-6">
+                                            <button type="submit" class="btn btn-primary" id="adminEdit">编辑</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+    <!-- /Page Container -->
+    <!-- Main Container -->
+
+</div>
+
+{include file='public/_js'/}
+<script>
+    $(function () {
+        $("#adminEdit").click(function () {
+            $.ajax({
+                url:"{:url('index/teacher/edit')}",
+                type:'post',
+                data:$('form').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.code == 1){
+                        layer.msg(data.msg,{
+                            icon:6,
+                            time:2000
+                        },function () {
+                            location.href = data.url;
+                        })
+                    }else{
+                        layer.open({
+                            title:'编辑失败',
+                            content:data.msg,
+                            icon:5,
+                            anim:6
+                        })
+                    }
+                }
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>
