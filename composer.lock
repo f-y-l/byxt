@@ -1,24 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "a2d823429f77d650c21c42c01b10acf7",
     "content-hash": "12077e4cc1d09bf12a73d49f5069a231",
     "packages": [
         {
             "name": "phpmailer/phpmailer",
-            "version": "v6.0.5",
+            "version": "v6.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPMailer/PHPMailer.git",
-                "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32"
+                "reference": "8190d73eb5def11a43cfb020b7f36db65330698c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/cb3ea134d4d3729e7857737d5f320cce9caf4d32",
-                "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/8190d73eb5def11a43cfb020b7f36db65330698c",
+                "reference": "8190d73eb5def11a43cfb020b7f36db65330698c",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +70,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2018-03-27 13:49:45"
+            "time": "2018-11-16T00:41:32+00:00"
         },
         {
             "name": "topthink/framework",
@@ -79,12 +78,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/top-think/framework.git",
-                "reference": "0afab2a8a31de30b59d681fb894fa7b78c24e7b9"
+                "reference": "a1958bf78fb47b6cf70d9b9ab71bb6eaec8037b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/framework/zipball/0afab2a8a31de30b59d681fb894fa7b78c24e7b9",
-                "reference": "0afab2a8a31de30b59d681fb894fa7b78c24e7b9",
+                "url": "https://api.github.com/repos/top-think/framework/zipball/a1958bf78fb47b6cf70d9b9ab71bb6eaec8037b3",
+                "reference": "a1958bf78fb47b6cf70d9b9ab71bb6eaec8037b3",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +121,7 @@
                 "orm",
                 "thinkphp"
             ],
-            "time": "2018-10-12 03:31:07"
+            "time": "2018-10-14T12:26:46+00:00"
         },
         {
             "name": "topthink/think-installer",
@@ -163,7 +162,7 @@
                     "email": "448901948@qq.com"
                 }
             ],
-            "time": "2018-05-11 06:45:42"
+            "time": "2018-05-11T06:45:42+00:00"
         }
     ],
     "packages-dev": [],
